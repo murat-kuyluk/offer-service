@@ -1,0 +1,17 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /account-project
+
+#datasource config
+spring:
+  datasource:
+    initialize: true
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driverClassName: org.h2.Driver
+    username: sa
+    password: password
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: none
