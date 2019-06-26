@@ -4,10 +4,14 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.provider.offer.dto.OfferRequest;
+import com.provider.offer.dto.OfferResponse;
+import com.provider.offer.service.OfferService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -17,6 +21,7 @@ import java.math.BigDecimal;
 import java.util.concurrent.TimeUnit;
 
 import static com.provider.offer.dto.ExpireTime.ExpireTimeBuilder.*;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -25,6 +30,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class OfferControllerTest {
 
     private MockMvc mockMvc;
+
+    @Mock
+    private OfferService offerService;
 
     @InjectMocks
     private OfferController controller;
@@ -41,8 +49,8 @@ public class OfferControllerTest {
     @Test
     public void createOffer_shouldCreateAnOfferAndReturn201OK_whenRequestIsValid() throws Exception {
 
-        OfferRequest offer = OfferRequest.OfferRequestBuilder.anOfferRequest()
-                .withDescription("Test offer")
+        OfferRequest offerRequest = OfferRequest.OfferRequestBuilder.anOfferRequest()
+                .withDescription("Test offerRequest")
                 .withPrice(BigDecimal.valueOf(12.99))
                 .withCurrency("GBP")
                 .withExpireTime(anExpireTime()
@@ -51,15 +59,27 @@ public class OfferControllerTest {
                         .build())
                 .build();
 
-        String requestBody = toJson(offer);
+        String requestBody = toJson(offerRequest);
+
+        OfferResponse offerResponse = OfferResponse.OfferResponseBuilder.anOfferResponse()
+                .withId(1)
+                .withStatus("VALID")
+                .withOfferDetails(offerRequest)
+                .build();
+
+        String responseBody = toJson(offerResponse);
+
+        when(offerService.createOffer(Mockito.any(OfferRequest.class))).thenReturn(offerResponse);
 
         mockMvc.perform(post("/offers")
                 .content(requestBody)
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(content().string("Offer created"))
+                .andExpect(content().string(responseBody))
         ;
+
+        verify(offerService).createOffer(offerRequest);
     }
 
     private <T> String toJson(T object) throws JsonProcessingException {

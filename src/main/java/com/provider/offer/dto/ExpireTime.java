@@ -1,5 +1,6 @@
 package com.provider.offer.dto;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class ExpireTime {
@@ -52,5 +53,19 @@ public class ExpireTime {
             expireTime.setUnit(unit);
             return expireTime;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ExpireTime that = (ExpireTime) o;
+        return time.equals(that.time) &&
+                unit == that.unit;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(time, unit);
     }
 }

@@ -1,6 +1,7 @@
 package com.provider.offer.dto;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 public class OfferRequest {
 
@@ -86,5 +87,21 @@ public class OfferRequest {
             offerRequest.setExpireTime(expireTime);
             return offerRequest;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OfferRequest that = (OfferRequest) o;
+        return description.equals(that.description) &&
+                price.equals(that.price) &&
+                currency.equals(that.currency) &&
+                expireTime.equals(that.expireTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(description, price, currency, expireTime);
     }
 }
