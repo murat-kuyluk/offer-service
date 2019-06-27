@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import static com.provider.offer.dto.ExpireTime.ExpireTimeBuilder.anExpireTime;
@@ -40,7 +41,7 @@ public class OfferServiceImplTest {
     @Test
     public void createOffer_shouldCreateAnOffer() {
 
-        OfferEntity savedOffer = createEntity(1);
+        OfferEntity savedOffer = createEntity(1, "2-DAYS", "VALID");
         when(repository.save(any(OfferEntity.class))).thenReturn(savedOffer);
 
         OfferRequest offerRequest = anOfferRequest()
@@ -55,18 +56,43 @@ public class OfferServiceImplTest {
         OfferDetails offerDetails = offerService.createOffer(offerRequest);
 
         assertThat(offerDetails).isNotNull();
-        OfferEntity unSavedOffer = createEntity(null);
+        OfferEntity unSavedOffer = createEntity(null, "2-DAYS", "VALID");
         verify(repository).save(unSavedOffer);
     }
 
-    private OfferEntity createEntity(Integer id) {
+    @Test
+    public void shouldExpireOffer_afterPeriodOfTime() throws InterruptedException {
+
+        OfferEntity savedOffer = createEntity(1, "1000-MILLISECONDS", "VALID");
+        when(repository.save(any(OfferEntity.class))).thenReturn(savedOffer);
+
+        OfferRequest offerRequest = anOfferRequest()
+                .withDescription("Test offer")
+                .withPrice(BigDecimal.valueOf(12.99))
+                .withCurrency("GBP")
+                .withExpireTime(anExpireTime()
+                        .withTime(1000)
+                        .withUnit(TimeUnit.MILLISECONDS)
+                        .build())
+                .build();
+        offerService.createOffer(offerRequest);
+
+        when(repository.findById(any(Integer.class))).thenReturn(Optional.ofNullable(savedOffer));
+
+        TimeUnit.MILLISECONDS.sleep(1010);
+
+        OfferEntity updatedOffer = createEntity(1, "1000-MILLISECONDS", "EXPIRED");
+        verify(repository).save(updatedOffer);
+    }
+
+    private OfferEntity createEntity(Integer id, String expireTime, String status) {
         return anOfferEntity()
                 .withId(id)
-                .withStatus("VALID")
+                .withStatus(status)
                 .withCurrency("GBP")
                 .withDescription("Test offer")
                 .withPrice(BigDecimal.valueOf(12.99))
-                .withExpireTime("2-DAYS")
+                .withExpireTime(expireTime)
                 .build();
     }
 }

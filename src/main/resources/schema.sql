@@ -7,7 +7,7 @@ create table offers(
   price numeric not null,
   currency varchar(100) not null,
   status varchar(10) not null,
-  expire_time varchar(15) not null,
+  expire_time varchar(40) not null,
   create_date timestamp not null,
   modify_date timestamp,
 
