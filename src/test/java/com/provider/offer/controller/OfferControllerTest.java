@@ -3,6 +3,7 @@ package com.provider.offer.controller;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.provider.offer.dto.OfferDetails;
 import com.provider.offer.dto.OfferRequest;
 import com.provider.offer.dto.OfferResponse;
 import com.provider.offer.service.OfferService;
@@ -21,6 +22,9 @@ import java.math.BigDecimal;
 import java.util.concurrent.TimeUnit;
 
 import static com.provider.offer.dto.ExpireTime.ExpireTimeBuilder.*;
+import static com.provider.offer.dto.OfferDetails.OfferDetailsBuilder.*;
+import static com.provider.offer.dto.OfferRequest.OfferRequestBuilder.*;
+import static com.provider.offer.dto.OfferResponse.OfferResponseBuilder.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -49,7 +53,7 @@ public class OfferControllerTest {
     @Test
     public void createOffer_shouldCreateAnOfferAndReturn201OK_whenRequestIsValid() throws Exception {
 
-        OfferRequest offerRequest = OfferRequest.OfferRequestBuilder.anOfferRequest()
+        OfferRequest offerRequest = anOfferRequest()
                 .withDescription("Test offerRequest")
                 .withPrice(BigDecimal.valueOf(12.99))
                 .withCurrency("GBP")
@@ -61,10 +65,17 @@ public class OfferControllerTest {
 
         String requestBody = toJson(offerRequest);
 
-        OfferResponse offerResponse = OfferResponse.OfferResponseBuilder.anOfferResponse()
+        OfferDetails offerDetails = anOfferDetails()
                 .withId(1)
+                .withDescription("Test offerRequest")
+                .withExpireTime("1-Day")
+                .withPrice("£12.99")
                 .withStatus("VALID")
-                .withOfferDetails(offerRequest)
+                .build();
+
+        OfferResponse offerResponse = anOfferResponse()
+                .withMessage("Success")
+                .withOfferDetails(offerDetails)
                 .build();
 
         String responseBody = toJson(offerResponse);

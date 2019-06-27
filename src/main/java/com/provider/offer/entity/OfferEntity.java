@@ -28,6 +28,9 @@ public class OfferEntity {
     @Column(name = "status")
     private String status;
 
+    @Column(name = "expire_time")
+    private String expireTime;
+
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "create_date")
@@ -94,6 +97,13 @@ public class OfferEntity {
         this.modifyDate = modifyDate;
     }
 
+    public String getExpireTime() {
+        return expireTime;
+    }
+
+    public void setExpireTime(String expireTime) {
+        this.expireTime = expireTime;
+    }
 
     public static final class OfferBuilder {
         private Integer id;
@@ -101,11 +111,12 @@ public class OfferEntity {
         private BigDecimal price;
         private String currency;
         private String status;
+        private String expireTime;
 
         private OfferBuilder() {
         }
 
-        public static OfferBuilder anOffer() {
+        public static OfferBuilder anOfferEntity() {
             return new OfferBuilder();
         }
 
@@ -134,6 +145,11 @@ public class OfferEntity {
             return this;
         }
 
+        public OfferBuilder withExpireTime(String expireTime) {
+            this.expireTime = expireTime;
+            return this;
+        }
+
         public OfferEntity build() {
             OfferEntity offerEntity = new OfferEntity();
             offerEntity.setId(id);
@@ -141,6 +157,7 @@ public class OfferEntity {
             offerEntity.setPrice(price);
             offerEntity.setCurrency(currency);
             offerEntity.setStatus(status);
+            offerEntity.setExpireTime(expireTime);
             return offerEntity;
         }
     }
