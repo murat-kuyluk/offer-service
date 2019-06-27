@@ -8,7 +8,7 @@ public class OfferDetails {
 
     private String price;
 
-    private String status;
+    private OfferStatus status;
 
     private String expireTime;
 
@@ -36,11 +36,11 @@ public class OfferDetails {
         this.price = price;
     }
 
-    public String getStatus() {
+    public OfferStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(OfferStatus status) {
         this.status = status;
     }
 
@@ -57,7 +57,7 @@ public class OfferDetails {
         private Integer id;
         private String description;
         private String price;
-        private String status;
+        private OfferStatus status;
         private String expireTime;
 
         private OfferDetailsBuilder() {
@@ -82,7 +82,7 @@ public class OfferDetails {
             return this;
         }
 
-        public OfferDetailsBuilder withStatus(String status) {
+        public OfferDetailsBuilder withStatus(OfferStatus status) {
             this.status = status;
             return this;
         }

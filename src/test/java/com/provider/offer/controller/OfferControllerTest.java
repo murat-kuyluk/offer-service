@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.provider.offer.dto.OfferDetails;
 import com.provider.offer.dto.OfferRequest;
 import com.provider.offer.dto.OfferResponse;
+import com.provider.offer.dto.OfferStatus;
 import com.provider.offer.service.OfferService;
 import org.junit.Before;
 import org.junit.Test;
@@ -70,7 +71,7 @@ public class OfferControllerTest {
                 .withDescription("Test offerRequest")
                 .withExpireTime("2-Days")
                 .withPrice("£12.99")
-                .withStatus("VALID")
+                .withStatus(OfferStatus.VALID)
                 .build();
 
         OfferResponse offerResponse = anOfferResponse()

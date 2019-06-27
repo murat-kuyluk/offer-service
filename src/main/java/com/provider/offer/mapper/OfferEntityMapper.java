@@ -3,6 +3,7 @@ package com.provider.offer.mapper;
 import com.provider.offer.dto.ExpireTime;
 import com.provider.offer.dto.OfferDetails;
 import com.provider.offer.dto.OfferRequest;
+import com.provider.offer.dto.OfferStatus;
 import com.provider.offer.entity.OfferEntity;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
@@ -29,5 +30,13 @@ public abstract class OfferEntityMapper {
     protected String getPriceWithCurrency(OfferEntity offerEntity){
         BigDecimal scaledPrice = offerEntity.getPrice().setScale(2, RoundingMode.HALF_EVEN);
         return Currency.getInstance(offerEntity.getCurrency()).getSymbol().concat(scaledPrice.toString());
+    }
+
+    protected OfferStatus toEnum(String status){
+        return OfferStatus.valueOf(status);
+    }
+
+    protected String toString(OfferStatus status){
+        return status.name();
     }
 }

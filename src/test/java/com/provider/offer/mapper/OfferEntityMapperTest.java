@@ -3,6 +3,7 @@ package com.provider.offer.mapper;
 import com.provider.offer.dto.ExpireTime;
 import com.provider.offer.dto.OfferDetails;
 import com.provider.offer.dto.OfferRequest;
+import com.provider.offer.dto.OfferStatus;
 import com.provider.offer.entity.OfferEntity;
 import org.junit.Before;
 import org.junit.Test;
@@ -70,7 +71,7 @@ public class OfferEntityMapperTest {
         assertThat(actual.getDescription()).isEqualTo("Test");
         assertThat(actual.getPrice()).isEqualTo("£12.99");
         assertThat(actual.getExpireTime()).isEqualTo("2-DAYS");
-        assertThat(actual.getStatus()).isEqualTo("VALID");
+        assertThat(actual.getStatus()).isEqualTo(OfferStatus.VALID);
     }
 
     @Test
