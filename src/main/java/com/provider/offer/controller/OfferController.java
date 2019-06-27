@@ -1,7 +1,7 @@
 package com.provider.offer.controller;
 
+import com.provider.offer.dto.OfferDetails;
 import com.provider.offer.dto.OfferRequest;
-import com.provider.offer.dto.OfferResponse;
 import com.provider.offer.service.OfferService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,8 +21,8 @@ public class OfferController {
 
     @PostMapping(value = "/offers", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity createOffer(@RequestBody OfferRequest offer){
-        OfferResponse offerResponse = offerService.createOffer(offer);
-        return ResponseEntity.status(HttpStatus.CREATED).body(offerResponse);
+        OfferDetails offerDetails = offerService.createOffer(offer);
+        return ResponseEntity.status(HttpStatus.CREATED).body(offerDetails);
     }
 
 }

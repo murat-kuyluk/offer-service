@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.*;
 
-public class OfferEntityEntityMapperTest {
+public class OfferEntityMapperTest {
 
     private OfferEntityMapper mapper;
     @Before
@@ -39,6 +39,7 @@ public class OfferEntityEntityMapperTest {
         assertThat(actual.getPrice()).isEqualTo(BigDecimal.valueOf(12.99));
         assertThat(actual.getDescription()).isEqualTo("Test offerRequest");
         assertThat(actual.getExpireTime()).isEqualTo("2-DAYS");
+        assertThat(actual.getStatus()).isEqualTo("VALID");
     }
 
     @Test

@@ -16,6 +16,7 @@ import java.util.Currency;
 public abstract class OfferEntityMapper {
 
     @Mapping(target = "expireTime", expression = "java(getExpireTimeAsString(offerRequest.getExpireTime()))")
+    @Mapping(target = "status", constant = "VALID")
     public abstract OfferEntity mapToOfferEntity(OfferRequest offerRequest);
 
     @Mapping(target = "price", expression = "java(getPriceWithCurrency(offerEntity))")

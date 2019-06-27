@@ -6,6 +6,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Objects;
 
 @Entity
 @Table(name = "offers")
@@ -160,5 +161,25 @@ public class OfferEntity {
             offerEntity.setExpireTime(expireTime);
             return offerEntity;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OfferEntity entity = (OfferEntity) o;
+        return Objects.equals(id, entity.id) &&
+                Objects.equals(description, entity.description) &&
+                Objects.equals(price, entity.price) &&
+                Objects.equals(currency, entity.currency) &&
+                Objects.equals(status, entity.status) &&
+                Objects.equals(expireTime, entity.expireTime) &&
+                Objects.equals(createDate, entity.createDate) &&
+                Objects.equals(modifyDate, entity.modifyDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, description, price, currency, status, expireTime, createDate, modifyDate);
     }
 }

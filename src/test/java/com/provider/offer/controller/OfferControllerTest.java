@@ -80,7 +80,7 @@ public class OfferControllerTest {
 
         String responseBody = toJson(offerResponse);
 
-        when(offerService.createOffer(Mockito.any(OfferRequest.class))).thenReturn(offerResponse);
+        when(offerService.createOffer(Mockito.any(OfferRequest.class))).thenReturn(offerDetails);
 
         mockMvc.perform(post("/offers")
                 .content(requestBody)
