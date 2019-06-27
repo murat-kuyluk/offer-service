@@ -8,4 +8,6 @@ public interface OfferService {
      OfferDetails createOffer(OfferRequest offer);
 
      OfferDetails retrieveOffer(Integer id);
+
+     OfferDetails cancelOffer(Integer id);
 }

@@ -16,13 +16,17 @@ import static com.provider.offer.dto.OfferResponse.OfferResponseBuilder.*;
 @RestController
 public class OfferController {
 
+    private static final String OFFERS_URL = "/offers";
+    private static final String OFFERS_RETRIEVE_URL = OFFERS_URL + "/{id}";
+    private static final String OFFERS_CANCEL_URL = OFFERS_RETRIEVE_URL + "/cancel";
+
     private final OfferService offerService;
 
     public OfferController(OfferService offerService) {
         this.offerService = offerService;
     }
 
-    @PostMapping(value = "/offers", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = OFFERS_URL, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity createOffer(@RequestBody OfferRequest offer){
         OfferDetails offerDetails = offerService.createOffer(offer);
         return Optional.ofNullable(offerDetails)
@@ -31,10 +35,20 @@ public class OfferController {
                 .orElse(createFailureResponse());
     }
 
-    @GetMapping(value = "/offers/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = OFFERS_RETRIEVE_URL, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity retrieveOffer(@PathVariable Integer id){
         OfferDetails offerDetails = offerService.retrieveOffer(id);
-        if (!Optional.ofNullable(offerDetails).isPresent()){
+        return createResponse(offerDetails);
+    }
+
+    @PutMapping(value = OFFERS_CANCEL_URL, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity cancelOffer(@PathVariable Integer id){
+        OfferDetails offerDetails = offerService.cancelOffer(id);
+        return createResponse(offerDetails);
+    }
+
+    private ResponseEntity createResponse(OfferDetails offerDetails) {
+        if (!Optional.ofNullable(offerDetails).isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Offer not found.");
         }
         return ResponseEntity.status(HttpStatus.OK).body(offerDetails);

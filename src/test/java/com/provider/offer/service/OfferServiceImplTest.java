@@ -114,6 +114,19 @@ public class OfferServiceImplTest {
         verify(repository).findById(1);
     }
 
+    @Test
+    public void cancelOffer_shouldUpdateOfferStatusAsCancelled_whenOfferExist(){
+
+        OfferEntity offer = createEntity(1, "1000-MILLISECONDS", "VALID");
+
+        when(repository.findById(any(Integer.class))).thenReturn(Optional.ofNullable(offer));
+
+        OfferDetails actual = offerService.cancelOffer(1);
+
+        assertThat(actual).isNotNull();
+        assertThat(actual.getStatus()).isEqualTo(OfferStatus.CANCELLED);
+    }
+
     private OfferEntity createEntity(Integer id, String expireTime, String status) {
         return anOfferEntity()
                 .withId(id)

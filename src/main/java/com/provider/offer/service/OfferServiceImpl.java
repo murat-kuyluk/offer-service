@@ -3,6 +3,7 @@ package com.provider.offer.service;
 import com.provider.offer.dto.ExpireTime;
 import com.provider.offer.dto.OfferDetails;
 import com.provider.offer.dto.OfferRequest;
+import com.provider.offer.dto.OfferStatus;
 import com.provider.offer.entity.OfferEntity;
 import com.provider.offer.mapper.OfferEntityMapper;
 import com.provider.offer.repository.OfferRepository;
@@ -34,18 +35,29 @@ public class OfferServiceImpl implements OfferService {
     @Override
     public OfferDetails retrieveOffer(Integer id) {
         return repository.findById(id)
-                .map(o -> mapper.mapToOfferDetails(o))
+                .map(mapper::mapToOfferDetails)
+                .orElse(null);
+    }
+
+    @Override
+    public OfferDetails cancelOffer(Integer id) {
+        return updateOffer(id, OfferStatus.CANCELLED)
+                .map(mapper::mapToOfferDetails)
                 .orElse(null);
     }
 
     private void scheduleOfferExpireTask(Integer offerId, ExpireTime expireTime){
-        Executors.newSingleThreadScheduledExecutor().schedule(() -> {
-            Optional<OfferEntity> offerEntity = repository.findById(offerId);
-            offerEntity.map(oe -> {
-                oe.setStatus("EXPIRED");
-                return oe;
-            }).ifPresent(oe -> repository.save(oe));
-        }, expireTime.getTime(), expireTime.getUnit());
+        Executors.newSingleThreadScheduledExecutor().schedule(() -> updateOffer(offerId, OfferStatus.EXPIRED),
+                expireTime.getTime(), expireTime.getUnit());
+    }
+
+    private Optional<OfferEntity> updateOffer(Integer offerId, OfferStatus offerStatus) {
+        Optional<OfferEntity> offerEntity = repository.findById(offerId);
+        offerEntity.map(oe -> {
+            oe.setStatus(offerStatus.name());
+            return oe;
+        }).ifPresent(repository::save);
+        return offerEntity;
     }
 
 }

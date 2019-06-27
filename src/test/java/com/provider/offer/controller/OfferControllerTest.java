@@ -26,8 +26,7 @@ import static com.provider.offer.dto.OfferDetails.OfferDetailsBuilder.*;
 import static com.provider.offer.dto.OfferRequest.OfferRequestBuilder.*;
 import static com.provider.offer.dto.OfferResponse.OfferResponseBuilder.*;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -143,6 +142,21 @@ public class OfferControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(content().string("Offer not found."))
+        ;
+    }
+
+    @Test
+    public void cancelOffer_shouldUpdateStatusOfOffer() throws Exception {
+
+        OfferDetails offerDetails = createOfferDetails();
+        offerDetails.setStatus(OfferStatus.CANCELLED);
+        when(offerService.cancelOffer(any(Integer.class))).thenReturn(offerDetails);
+
+
+        mockMvc.perform(put("/offers/1/cancel"))
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().string(toJson(offerDetails)))
         ;
     }
 
