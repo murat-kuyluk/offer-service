@@ -2,6 +2,7 @@ package com.provider.offer.service;
 
 import com.provider.offer.dto.OfferDetails;
 import com.provider.offer.dto.OfferRequest;
+import com.provider.offer.dto.OfferStatus;
 import com.provider.offer.entity.OfferEntity;
 import com.provider.offer.mapper.OfferEntityMapper;
 import com.provider.offer.mapper.OfferEntityMapperImpl;
@@ -83,6 +84,34 @@ public class OfferServiceImplTest {
 
         OfferEntity updatedOffer = createEntity(1, "1000-MILLISECONDS", "EXPIRED");
         verify(repository).save(updatedOffer);
+    }
+
+    @Test
+    public void retrieveOffer_shouldReturnOfferById_whenOfferExist() {
+
+        OfferEntity offer = createEntity(1, "1000-MILLISECONDS", "VALID");
+
+        when(repository.findById(any(Integer.class))).thenReturn(Optional.ofNullable(offer));
+
+        OfferDetails actual = offerService.retrieveOffer(1);
+
+        assertThat(actual).isNotNull();
+        assertThat(actual.getId()).isEqualTo(1);
+        assertThat(actual.getStatus()).isEqualTo(OfferStatus.VALID);
+        assertThat(actual.getExpireTime()).isEqualTo("1000-MILLISECONDS");
+
+        verify(repository).findById(1);
+    }
+
+    @Test
+    public void retrieveOffer_shouldReturnNull_whenOfferNotExist() {
+
+        when(repository.findById(any(Integer.class))).thenReturn(Optional.empty());
+
+        OfferDetails actual = offerService.retrieveOffer(1);
+
+        assertThat(actual).isNull();
+        verify(repository).findById(1);
     }
 
     private OfferEntity createEntity(Integer id, String expireTime, String status) {

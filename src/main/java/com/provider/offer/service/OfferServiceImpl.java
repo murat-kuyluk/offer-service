@@ -31,6 +31,13 @@ public class OfferServiceImpl implements OfferService {
         return mapper.mapToOfferDetails(savedOffer);
     }
 
+    @Override
+    public OfferDetails retrieveOffer(Integer id) {
+        return repository.findById(id)
+                .map(o -> mapper.mapToOfferDetails(o))
+                .orElse(null);
+    }
+
     private void scheduleOfferExpireTask(Integer offerId, ExpireTime expireTime){
         Executors.newSingleThreadScheduledExecutor().schedule(() -> {
             Optional<OfferEntity> offerEntity = repository.findById(offerId);

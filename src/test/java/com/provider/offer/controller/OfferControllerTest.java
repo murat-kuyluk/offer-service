@@ -13,7 +13,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -27,6 +26,7 @@ import static com.provider.offer.dto.OfferDetails.OfferDetailsBuilder.*;
 import static com.provider.offer.dto.OfferRequest.OfferRequestBuilder.*;
 import static com.provider.offer.dto.OfferResponse.OfferResponseBuilder.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -66,13 +66,7 @@ public class OfferControllerTest {
 
         String requestBody = toJson(offerRequest);
 
-        OfferDetails offerDetails = anOfferDetails()
-                .withId(1)
-                .withDescription("Test offerRequest")
-                .withExpireTime("2-Days")
-                .withPrice("£12.99")
-                .withStatus(OfferStatus.VALID)
-                .build();
+        OfferDetails offerDetails = createOfferDetails();
 
         OfferResponse offerResponse = anOfferResponse()
                 .withMessage("A new offer created successfully")
@@ -124,6 +118,42 @@ public class OfferControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(content().string(responseBody))
         ;
+    }
+
+    @Test
+    public void retrieveOffer_shouldReturnOfferDetails_whenIdIsValid() throws Exception {
+
+        OfferDetails offerDetails = createOfferDetails();
+        when(offerService.retrieveOffer(any(Integer.class))).thenReturn(offerDetails);
+        String expectedJson = toJson(offerDetails);
+
+        mockMvc.perform(get("/offers/1"))
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().string(expectedJson))
+        ;
+    }
+
+    @Test
+    public void retrieveOffer_shouldReturnNotFound_whenOfferNotExist() throws Exception {
+
+        when(offerService.retrieveOffer(any(Integer.class))).thenReturn(null);
+
+        mockMvc.perform(get("/offers/1"))
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().string("Offer not found."))
+        ;
+    }
+
+    private OfferDetails createOfferDetails() {
+        return anOfferDetails()
+                .withId(1)
+                .withDescription("Test offerRequest")
+                .withExpireTime("2-Days")
+                .withPrice("£12.99")
+                .withStatus(OfferStatus.VALID)
+                .build();
     }
 
     private <T> String toJson(T object) throws JsonProcessingException {

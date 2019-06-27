@@ -7,9 +7,7 @@ import com.provider.offer.service.OfferService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -31,6 +29,15 @@ public class OfferController {
                 .filter(od -> od.getId() != null)
                 .map(this::createSuccessResponse)
                 .orElse(createFailureResponse());
+    }
+
+    @GetMapping(value = "/offers/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity retrieveOffer(@PathVariable Integer id){
+        OfferDetails offerDetails = offerService.retrieveOffer(id);
+        if (!Optional.ofNullable(offerDetails).isPresent()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Offer not found.");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(offerDetails);
     }
 
     private ResponseEntity<OfferResponse> createSuccessResponse(OfferDetails offerDetails){
