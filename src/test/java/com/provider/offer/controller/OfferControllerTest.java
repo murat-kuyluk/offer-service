@@ -58,7 +58,7 @@ public class OfferControllerTest {
                 .withPrice(BigDecimal.valueOf(12.99))
                 .withCurrency("GBP")
                 .withExpireTime(anExpireTime()
-                        .withTime(1)
+                        .withTime(2)
                         .withUnit(TimeUnit.DAYS)
                         .build())
                 .build();
@@ -68,19 +68,19 @@ public class OfferControllerTest {
         OfferDetails offerDetails = anOfferDetails()
                 .withId(1)
                 .withDescription("Test offerRequest")
-                .withExpireTime("1-Day")
+                .withExpireTime("2-Days")
                 .withPrice("£12.99")
                 .withStatus("VALID")
                 .build();
 
         OfferResponse offerResponse = anOfferResponse()
-                .withMessage("Success")
+                .withMessage("A new offer created successfully")
                 .withOfferDetails(offerDetails)
                 .build();
 
         String responseBody = toJson(offerResponse);
 
-        when(offerService.createOffer(Mockito.any(OfferRequest.class))).thenReturn(offerDetails);
+        when(offerService.createOffer(any(OfferRequest.class))).thenReturn(offerDetails);
 
         mockMvc.perform(post("/offers")
                 .content(requestBody)
@@ -91,6 +91,38 @@ public class OfferControllerTest {
         ;
 
         verify(offerService).createOffer(offerRequest);
+    }
+
+    @Test
+    public void createOffer_shouldReturnErrorMessage_whenExceptionOccurs() throws Exception {
+
+        OfferRequest offerRequest = anOfferRequest()
+                .withDescription("Test offerRequest")
+                .withPrice(BigDecimal.valueOf(12.99))
+                .withCurrency("GBP")
+                .withExpireTime(anExpireTime()
+                        .withTime(2)
+                        .withUnit(TimeUnit.DAYS)
+                        .build())
+                .build();
+
+        String requestBody = toJson(offerRequest);
+
+        when(offerService.createOffer(any(OfferRequest.class))).thenReturn(anOfferDetails().build());
+
+        OfferResponse offerResponse = anOfferResponse()
+                .withMessage("Failed to create a new offer.")
+                .build();
+
+        String responseBody = toJson(offerResponse);
+
+        mockMvc.perform(post("/offers")
+                .content(requestBody)
+                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().is5xxServerError())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(content().string(responseBody))
+        ;
     }
 
     private <T> String toJson(T object) throws JsonProcessingException {
