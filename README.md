@@ -21,7 +21,7 @@ Endpoints
          "unit": "MILLISECONDS"
      }
  }
- unit value could be HOURS, DAYS etc.
+ unit value could be DAYS, HOURS, MICROSECONDS, MILLISECONDS, MINUTES, NANOSECONDS, SECONDS .
  ```
 
  - GET http://localhost:8080/offer-service/offers/3; retrieves the specific offer by given id
