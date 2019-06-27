@@ -53,15 +53,7 @@ public class OfferControllerTest {
     @Test
     public void createOffer_shouldCreateAnOfferAndReturn201OK_whenRequestIsValid() throws Exception {
 
-        OfferRequest offerRequest = anOfferRequest()
-                .withDescription("Test offerRequest")
-                .withPrice(BigDecimal.valueOf(12.99))
-                .withCurrency("GBP")
-                .withExpireTime(anExpireTime()
-                        .withTime(2)
-                        .withUnit(TimeUnit.DAYS)
-                        .build())
-                .build();
+        OfferRequest offerRequest = createOfferRequest();
 
         String requestBody = toJson(offerRequest);
 
@@ -90,15 +82,7 @@ public class OfferControllerTest {
     @Test
     public void createOffer_shouldReturnErrorMessage_whenExceptionOccurs() throws Exception {
 
-        OfferRequest offerRequest = anOfferRequest()
-                .withDescription("Test offerRequest")
-                .withPrice(BigDecimal.valueOf(12.99))
-                .withCurrency("GBP")
-                .withExpireTime(anExpireTime()
-                        .withTime(2)
-                        .withUnit(TimeUnit.DAYS)
-                        .build())
-                .build();
+        OfferRequest offerRequest = createOfferRequest();
 
         String requestBody = toJson(offerRequest);
 
@@ -167,6 +151,18 @@ public class OfferControllerTest {
                 .withExpireTime("2-Days")
                 .withPrice("£12.99")
                 .withStatus(OfferStatus.VALID)
+                .build();
+    }
+
+    private OfferRequest createOfferRequest() {
+        return anOfferRequest()
+                .withDescription("Test offerRequest")
+                .withPrice(BigDecimal.valueOf(12.99))
+                .withCurrency("GBP")
+                .withExpireTime(anExpireTime()
+                        .withTime(2)
+                        .withUnit(TimeUnit.DAYS)
+                        .build())
                 .build();
     }
 
