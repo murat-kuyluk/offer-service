@@ -6,7 +6,7 @@ Tech Stack
 Import and Run
  - The project is maven based, it is easily imported to any IDE as usual way
  - mvn clean install
- - java -jar target/account-service-0.0.1-SNAPSHOT.jar
+ - java -jar target/offer-service-0.0.1-SNAPSHOT.jar
  - during the application start-up, it creates a schema in the H2 in-memory db.
 
 Endpoints
